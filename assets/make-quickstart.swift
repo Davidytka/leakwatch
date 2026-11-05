@@ -1,5 +1,5 @@
 // Renders the "Quick start" README art:
-//   quickstart-banner-ru.png / quickstart-banner-en.png  (horizontal banner, 3 steps)
+//   quickstart-steps-ru.png / quickstart-steps-en.png  (horizontal banner, 3 numbered steps)
 //   icon-macos.png / icon-windows.png      (platform badges for headings)
 // Build & run: swiftc -o /tmp/makeqs assets/make-quickstart.swift && /tmp/makeqs assets
 import AppKit
@@ -56,7 +56,7 @@ struct Step { let icon: String; let title: String; let sub: String }
 
 func quickstart(_ lang: String) {
     let ru = lang == "ru"
-    let W: CGFloat = 1280, H: CGFloat = 380
+    let W: CGFloat = 1280, H: CGFloat = 302
     let steps = ru ? [
         Step(icon: "lock.shield.fill", title: "Подключи VPN", sub: "любой, как обычно"),
         Step(icon: "terminal.fill", title: "Вставь команду", sub: "Терминал или PowerShell"),
@@ -66,16 +66,8 @@ func quickstart(_ lang: String) {
         Step(icon: "terminal.fill", title: "Paste one command", sub: "Terminal or PowerShell"),
         Step(icon: "checkmark.circle.fill", title: "Done", sub: "✓ in the menu bar + widget"),
     ]
-    render("quickstart-banner-\(lang).png", W, H) {
+    render("quickstart-steps-\(lang).png", W, H) {
         roundedBackground(NSRect(x: 0, y: 0, width: W, height: H), 32)
-
-        // Header
-        symbol("bolt.fill", 30, [rgb(0xFFD60A)], 66, H - 62)
-        text(ru ? "Быстрый запуск" : "Quick start", 92, H - 82, .systemFont(ofSize: 34, weight: .heavy), .white)
-        let hf = NSFont.systemFont(ofSize: 34, weight: .heavy)
-        let hw = ((ru ? "Быстрый запуск" : "Quick start") as NSString).size(withAttributes: [.font: hf]).width
-        text(ru ? "3 шага · около минуты" : "3 steps · about a minute", 92 + hw + 22, H - 74,
-             .systemFont(ofSize: 21, weight: .medium), rgb(0xFFFFFF, 0.5))
 
         // Three step cards in a row with arrows between them
         let margin: CGFloat = 48, gap: CGFloat = 60
@@ -91,14 +83,12 @@ func quickstart(_ lang: String) {
                 b.lineWidth = 1.5; b.stroke()
             }
 
-            // number badge (top-left) and icon (top-right)
+            // number badge (top-left)
             let bc = NSRect(x: card.minX + 24, y: card.maxY - 66, width: 42, height: 42)
             (last ? green : rgb(0xFFFFFF, 0.14)).setFill(); NSBezierPath(ovalIn: bc).fill()
             let nf = NSFont.systemFont(ofSize: 22, weight: .bold)
             let ns = ("\(i + 1)" as NSString).size(withAttributes: [.font: nf])
             text("\(i + 1)", bc.midX - ns.width / 2, bc.midY - ns.height / 2, nf, .white)
-            symbol(s.icon, 32, last ? [.white, green] : [rgb(0xFFFFFF, 0.75), rgb(0xFFFFFF, 0.25)],
-                   card.maxX - 46, bc.midY, weight: .regular)
 
             text(s.title, card.minX + 24, card.minY + 92, .systemFont(ofSize: 28, weight: .semibold), .white)
             text(s.sub, card.minX + 24, card.minY + 60, .systemFont(ofSize: 19), rgb(0xFFFFFF, 0.6))
@@ -115,9 +105,7 @@ func quickstart(_ lang: String) {
                 rgb(0xFFFFFF, 0.12).setFill(); NSBezierPath(roundedRect: pill, xRadius: 9, yRadius: 9).fill()
                 symbol("checkmark.circle.fill", 15, [.white, green], pill.minX + 20, pill.midY)
                 text("DNS", pill.minX + 36, pill.minY + 5, .systemFont(ofSize: 16, weight: .semibold), .white)
-            default:
-                text(ru ? "WireGuard · OpenVPN · любой" : "WireGuard · OpenVPN · any", foot.minX, foot.minY + 6,
-                     .systemFont(ofSize: 15, weight: .medium), rgb(0xFFFFFF, 0.38))
+            default: break
             }
 
             // arrow to the next card
