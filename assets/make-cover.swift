@@ -130,6 +130,6 @@ symbol("wifi", 18, rgb(0xFFFFFF, 0.7), 1090, 554)
 text("12:00", 1130, 552, .systemFont(ofSize: 19, weight: .medium), rgb(0xFFFFFF, 0.8))
 
 NSGraphicsContext.current = nil
-let out = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "assets/cover.png")
+let out = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "assets/cover-ru.png")
 try! rep.representation(using: .png, properties: [:])!.write(to: out)
 print("Wrote \(out.path)")
