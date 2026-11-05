@@ -1,6 +1,30 @@
-// Renders assets/cover.png (1280x640 @2x) for the README and GitHub social preview.
-// Run: swift assets/make-cover.swift
+// Renders the cover (1280x640 @2x) for the README and GitHub social preview.
+// Build & run: swiftc -o /tmp/makecover assets/make-cover.swift && /tmp/makecover assets/cover-ru.png ru
 import AppKit
+
+let lang = CommandLine.arguments.count > 2 ? CommandLine.arguments[2] : "ru"
+func strings(_ l: String) -> [String: String] {
+    if l == "en" {
+        return [
+            "l1": "Your VPN says you’re protected.", "l2": "Your DNS might say otherwise.",
+            "f1": "Hourly DNS leak checks · menu bar & tray icon", "f2": "desktop widget · instant alerts",
+            "free": "Free & open source",
+            "alert": "Real location exposed", "alertSub": "DNS: your ISP · home country",
+            "ok": "No leaks", "btn": "Test now", "last": "Last test: 3 minutes ago",
+            "ip": "IP:    Netherlands · VPN provider", "dns": "DNS: Sweden · Cloudflare  ×2",
+        ]
+    }
+    return [
+        "l1": "VPN говорит, что ты защищён.", "l2": "DNS может говорить обратное.",
+        "f1": "Проверка утечек DNS каждый час · значок в меню и трее", "f2": "виджет на рабочем столе · мгновенные оповещения",
+        "free": "Бесплатно и с открытым кодом",
+        "alert": "Местоположение раскрыто", "alertSub": "DNS: твой провайдер · твоя страна",
+        "ok": "Утечек нет", "btn": "Проверить", "last": "Последняя проверка: 3 минуты назад",
+        "ip": "IP:    Нидерланды · VPN-провайдер", "dns": "DNS: Швеция · Cloudflare  ×2",
+    ]
+}
+let T = strings(lang)
+func t(_ k: String) -> String { T[k]! }
 
 let W: CGFloat = 1280, H: CGFloat = 640, scale: CGFloat = 2
 let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(W * scale), pixelsHigh: Int(H * scale),
@@ -60,14 +84,14 @@ for gx in stride(from: CGFloat(20), to: W, by: 32) {
 // Left: brand + pitch
 symbol("checkmark.shield.fill", 46, green, 80, 466)
 text("LeakWatch", 142, 456, .systemFont(ofSize: 64, weight: .heavy), .white, kern: -1.5)
-text("Your VPN says you’re protected.", 80, 360, .systemFont(ofSize: 34, weight: .semibold), .white)
-text("Your DNS might say otherwise.", 80, 316, .systemFont(ofSize: 34, weight: .semibold), green)
-text("Hourly DNS leak checks · menu bar & tray icon", 80, 248, .systemFont(ofSize: 21, weight: .regular), rgb(0xFFFFFF, 0.62))
-text("desktop widget · instant alerts", 80, 220, .systemFont(ofSize: 21, weight: .regular), rgb(0xFFFFFF, 0.62))
+text(t("l1"), 80, 360, .systemFont(ofSize: 34, weight: .semibold), .white)
+text(t("l2"), 80, 316, .systemFont(ofSize: 34, weight: .semibold), green)
+text(t("f1"), 80, 248, .systemFont(ofSize: 21, weight: .regular), rgb(0xFFFFFF, 0.62))
+text(t("f2"), 80, 220, .systemFont(ofSize: 21, weight: .regular), rgb(0xFFFFFF, 0.62))
 
 // Platform chips
 var cx: CGFloat = 80
-for label in ["macOS", "Windows", "Free & open source"] {
+for label in ["macOS", "Windows", t("free")] {
     let f = NSFont.systemFont(ofSize: 18, weight: .semibold)
     let w = (label as NSString).size(withAttributes: [.font: f]).width + 36
     let r = NSRect(x: cx, y: 120, width: w, height: 40)
@@ -79,18 +103,23 @@ for label in ["macOS", "Windows", "Free & open source"] {
 // Right: alert card (behind) and OK card (front), like the real widget
 card(NSRect(x: 790, y: 330, width: 410, height: 150), fill: rgb(0x2A1518, 0.96))
 symbol("xmark.circle.fill", 30, red, 822, 427)
-text("Real location exposed", 866, 428, .systemFont(ofSize: 26, weight: .semibold), .white)
-text("DNS: your ISP · home country", 822, 384, .systemFont(ofSize: 19), rgb(0xFFFFFF, 0.6))
+// Shrink the alert title until it fits inside the card (ends 24 pt before x=1200)
+var af: CGFloat = 26
+while af > 16 && (t("alert") as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: af, weight: .semibold)]).width > 1176 - 866 { af -= 1 }
+text(t("alert"), 866, 428 + (26 - af) / 2, .systemFont(ofSize: af, weight: .semibold), .white)
+text(t("alertSub"), 822, 384, .systemFont(ofSize: 19), rgb(0xFFFFFF, 0.6))
 
 card(NSRect(x: 700, y: 150, width: 470, height: 230), fill: rgb(0x1E2638, 0.98))
 symbol("checkmark.circle.fill", 34, green, 734, 316)
-text("No leaks", 784, 316, .systemFont(ofSize: 32, weight: .semibold), .white)
-let pill = NSRect(x: 1036, y: 318, width: 104, height: 36)
+text(t("ok"), 784, 316, .systemFont(ofSize: 32, weight: .semibold), .white)
+let bf = NSFont.systemFont(ofSize: 17, weight: .medium)
+let bw = (t("btn") as NSString).size(withAttributes: [.font: bf]).width + 32
+let pill = NSRect(x: 1140 - bw, y: 318, width: bw, height: 36)
 rgb(0xFFFFFF, 0.12).setFill(); NSBezierPath(roundedRect: pill, xRadius: 10, yRadius: 10).fill()
-text("Test now", 1052, 326, .systemFont(ofSize: 17, weight: .medium), .white)
-text("Last test: 3 minutes ago", 736, 272, .systemFont(ofSize: 18), rgb(0xFFFFFF, 0.55))
-text("IP:    Netherlands · VPN provider", 736, 226, .systemFont(ofSize: 20), rgb(0xFFFFFF, 0.88))
-text("DNS: Sweden · Cloudflare  ×2", 736, 192, .systemFont(ofSize: 20), rgb(0xFFFFFF, 0.88))
+text(t("btn"), pill.minX + 16, 326, bf, .white)
+text(t("last"), 736, 272, .systemFont(ofSize: 18), rgb(0xFFFFFF, 0.55))
+text(t("ip"), 736, 226, .systemFont(ofSize: 20), rgb(0xFFFFFF, 0.88))
+text(t("dns"), 736, 192, .systemFont(ofSize: 20), rgb(0xFFFFFF, 0.88))
 
 // Menu bar pill
 let mb = NSRect(x: 980, y: 540, width: 220, height: 46)

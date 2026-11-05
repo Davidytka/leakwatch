@@ -1,87 +1,87 @@
-<p align="center"><img src="assets/cover.png" alt="LeakWatch: hourly DNS leak monitor for macOS and Windows" width="100%"></p>
+<p align="center"><img src="assets/cover-ru.png" alt="LeakWatch — ежечасная проверка утечек DNS для macOS и Windows" width="100%"></p>
 
 # LeakWatch
 
-**Your VPN says you're protected. Your DNS might be saying otherwise.**
+**VPN говорит, что ты защищён. DNS может говорить обратное.**
 
-LeakWatch quietly checks for DNS leaks every hour and shows the result as a ✓ or ✗ in your menu bar / system tray and in a small desktop widget. If your real location ever shows up, you hear it and see it immediately.
+LeakWatch раз в час проверяет утечки DNS и показывает результат галочкой или крестиком в строке меню или трее и в небольшом виджете на рабочем столе. Если где-то всплывёт твоё реальное местоположение, ты сразу это увидишь и услышишь.
 
-macOS · Windows · free · open source · no account · no telemetry
+macOS · Windows · бесплатно · открытый код · без регистрации · без сбора данных
 
-🇷🇺 [Русская версия](README.ru.md)
+🇬🇧 [English version](README.en.md)
 
 ---
 
-## ⚡ Quick start
+## ⚡ Быстрый запуск
 
-Connect your VPN first, then run **one command**. The installer asks 3 short questions and you're done.
+Сначала подключи VPN, потом выполни **одну команду**. Установщик задаст 3 коротких вопроса, и всё готово.
 
-**macOS:** open Terminal and paste:
+**macOS:** открой Терминал и вставь:
 
 ```bash
 curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz | tar xz -C /tmp && /tmp/leakwatch-main/macos/install.sh
 ```
 
-> Needs Apple Command Line Tools. If you've never installed them, run `xcode-select --install` first.
+> Нужны Apple Command Line Tools. Если ты их никогда не ставил, сначала выполни `xcode-select --install`.
 
-**Windows:** press `Win + R`, type `powershell`, press Enter, and paste:
+**Windows:** нажми `Win + R`, введи `powershell`, нажми Enter и вставь:
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol='Tls12'; iwr https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip -UseBasicParsing -OutFile $env:TEMP\lw.zip; Expand-Archive $env:TEMP\lw.zip $env:TEMP\lw -Force; & "$env:TEMP\lw\leakwatch-main\windows\install.cmd"
 ```
 
-> Prefer clicking? [Download the ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), unzip it, and double-click `windows\install.cmd`.
+> Удобнее мышкой? [Скачай ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), распакуй его и дважды кликни `windows\install.cmd`.
 
-That's it. A ✓ appears in your menu bar or tray and a widget appears on your desktop. Tests run every hour from now on.
+Вот и всё. В строке меню или трее появится ✓, а на рабочем столе — виджет. С этого момента проверка идёт каждый час.
 
 ---
 
-## The problem
+## Проблема
 
-You turn on a VPN and assume everything goes through the tunnel. Often it doesn't.
+Ты включаешь VPN и думаешь, что весь трафик идёт через туннель. Часто это не так.
 
-- **DNS leaks.** Your browser asks "where is example.com?" before it connects anywhere. If that question goes to your ISP instead of through the VPN, your ISP (and anyone watching it) sees every site you visit, even though the traffic itself is encrypted.
-- **Silent VPN drops.** The VPN reconnects after sleep, you switch Wi-Fi, or a client update resets a setting, and nothing tells you. You find out hours later, or never.
-- **Checking by hand gets old.** Leak-test websites work, but only when you remember to open them. Nobody does that every hour.
+- **Утечка DNS.** Прежде чем открыть сайт, браузер спрашивает, где находится example.com. Если этот вопрос уходит провайдеру, а не через VPN, провайдер (и все, кто за ним следит) видит каждый сайт, который ты открываешь, хотя сам трафик зашифрован.
+- **VPN тихо отвалился.** После сна, смены Wi-Fi или обновления клиента VPN переподключился не так, как надо, и тебе никто ничего не сказал. Узнаёшь об этом через несколько часов или не узнаёшь вовсе.
+- **Проверять вручную надоедает.** Сайты для проверки утечек работают, но только когда ты вспоминаешь их открыть. Каждый час этого никто не делает.
 
-For journalists, remote workers, people on public Wi-Fi, and anyone who uses a VPN for privacy, a leak you don't notice is worse than no VPN at all, because you behave as if you're protected.
+Для журналистов, удалёнщиков, тех, кто сидит в публичном Wi-Fi, и вообще для всех, кто пользуется VPN ради приватности, незамеченная утечка хуже, чем отсутствие VPN: ты ведёшь себя так, будто защищён.
 
-## What LeakWatch does
+## Что делает LeakWatch
 
-- **Automatic test every hour**, plus at login and after waking from sleep. It waits for the network/VPN to come up first, so you don't get false alarms.
-- **At-a-glance status:** a ✓ or ✗ icon in the menu bar (macOS) or tray (Windows), and a widget on your desktop.
-- **Two alert levels:**
-  - 🟠 **Leak.** Your IP or a DNS server is in a country outside your allowed list. You get a notification and a sound.
-  - 🔴 **Real location exposed.** Your home country (or a city or ISP you list) shows up. You get a notification, a pop-up that stays until you close it, and a loud sound played 3 times.
-- **Silent when everything is fine.**
-- **History:** the last tests are in the menu, and a full log is kept on disk.
+- **Проверяет автоматически раз в час**, а также при входе в систему и после пробуждения из сна. Сначала дожидается, пока поднимутся сеть и VPN, поэтому ложных тревог нет.
+- **Показывает статус с одного взгляда:** галочку или крестик в строке меню (macOS) или в трее (Windows) и виджет на рабочем столе.
+- **Различает два уровня тревоги:**
+  - 🟠 **Утечка.** IP или DNS-сервер оказался в стране не из твоего списка разрешённых. Приходит уведомление со звуком.
+  - 🔴 **Раскрыто реальное местоположение.** Появилась твоя страна (или город либо провайдер из списка). Приходит уведомление, всплывает окно, которое висит, пока его не закроешь, и трижды звучит громкий сигнал.
+- **Молчит, когда всё в порядке.**
+- **Хранит историю:** последние проверки видны в меню, полный журнал лежит на диске.
 
-| Icon | Meaning |
+| Значок | Что значит |
 |---|---|
-| ✓ green | No leaks |
-| ✗ orange | Leak to an unwanted country, or the test failed (offline) |
-| ✗ red | Real location exposed |
-| 🔄 blue | Test running |
-| 🕐 gray | No test for more than 75 minutes |
+| ✓ зелёный | Утечек нет |
+| ✗ оранжевый | Утечка в нежелательную страну или проверка не удалась (нет сети) |
+| ✗ красный | Раскрыто реальное местоположение |
+| 🔄 синий | Идёт проверка |
+| 🕐 серый | Проверок не было больше 75 минут |
 
-## How it works
+## Как это работает
 
-LeakWatch uses the open [bash.ws](https://bash.ws/dnsleak) DNS leak test, the same method as many leak-test websites:
+LeakWatch использует открытый тест утечек [bash.ws](https://bash.ws/dnsleak). На том же принципе работают многие сайты для проверки утечек:
 
-1. It gets a unique random ID from bash.ws.
-2. It looks up 10 unique names (`1.<id>.bash.ws` … `10.<id>.bash.ws`) **through your system's normal resolver**, the same path your browser uses.
-3. bash.ws reports which DNS servers actually made those lookups, and from which country and network.
-4. LeakWatch compares that, and your public IP, with your settings.
+1. Программа получает у bash.ws уникальный случайный ID.
+2. Запрашивает 10 уникальных адресов (`1.<id>.bash.ws` … `10.<id>.bash.ws`) **через обычный системный резолвер**, то есть тем же путём, что и браузер.
+3. bash.ws сообщает, какие DNS-серверы на самом деле сделали эти запросы и из какой они страны и сети.
+4. LeakWatch сравнивает это и твой публичный IP с твоими настройками.
 
-It does **not** rely on bash.ws's own "DNS may be leaking" verdict. That verdict fires whenever your DNS provider differs from your VPN provider (for example, a VPN using Cloudflare DNS), which is usually fine. Your own allowed and alert lists decide.
+Собственный вывод bash.ws «DNS may be leaking» программа **не использует**. Он срабатывает всякий раз, когда DNS-провайдер отличается от VPN-провайдера (например, если VPN использует DNS Cloudflare), и обычно это нормально. Решение принимают только твои списки разрешённых стран и слов-тревог.
 
-**Privacy:** LeakWatch has no servers and collects nothing. The only outside service it contacts is bash.ws, for the test itself. Results stay on your computer.
+**Приватность:** у LeakWatch нет своих серверов, и она ничего не собирает. Из внешних сервисов она обращается только к bash.ws, чтобы провести саму проверку. Результаты остаются на твоём компьютере.
 
-## Install
+## Установка
 
-### macOS (13 Ventura or newer)
+### macOS (13 Ventura или новее)
 
-Requirements: Apple Command Line Tools (`xcode-select --install`) and `jq`, which is built into macOS 15+ (or `brew install jq`).
+Нужны Apple Command Line Tools (`xcode-select --install`) и `jq`. В macOS 15+ `jq` уже встроен, в более старых версиях поставь его командой `brew install jq`.
 
 ```bash
 git clone https://github.com/Davidytka/leakwatch.git
@@ -89,56 +89,56 @@ cd leakwatch/macos
 ./install.sh
 ```
 
-Or click **Code → Download ZIP**, unzip it, open Terminal in the `macos` folder, and run `./install.sh`.
+Или нажми **Code → Download ZIP**, распакуй архив, открой Терминал в папке `macos` и выполни `./install.sh`.
 
-The installer:
-1. asks you to connect your VPN and runs a first test,
-2. suggests the countries it just saw as your **allowed countries** (press Enter to accept),
-3. asks for your **real country** (the red-alert trigger),
-4. builds the small native app (`~/Applications/LeakWatch.app`) and starts it, plus the hourly test, at login.
+Установщик:
+1. попросит подключить VPN и проведёт первую проверку,
+2. предложит страны, которые только что увидел, как **разрешённые** (нажми Enter, чтобы согласиться),
+3. спросит **твою реальную страну**, при появлении которой включается красная тревога,
+4. соберёт небольшое приложение (`~/Applications/LeakWatch.app`), запустит его и настроит автозапуск вместе с ежечасной проверкой при входе в систему.
 
-No admin password needed.
+Пароль администратора не нужен.
 
-### Windows 10 / 11 (beta)
+### Windows 10 / 11 (бета)
 
-> ⚠️ The Windows version is new and hasn't been widely tested yet. Please [open an issue](../../issues) if something doesn't work.
+> ⚠️ Версия для Windows новая и ещё мало протестирована. Если что-то не работает, [создай issue](../../issues).
 
-1. Click **Code → Download ZIP** and unzip it.
-2. Open the `windows` folder and double-click **`install.cmd`**.
-3. Answer the same 3 questions as on macOS.
+1. Нажми **Code → Download ZIP** и распакуй архив.
+2. Открой папку `windows` и дважды кликни **`install.cmd`**.
+3. Ответь на те же 3 вопроса, что и на macOS.
 
-It uses only built-in Windows components (PowerShell + .NET). Nothing extra to install, no admin rights. The tray icon may land in the hidden-icons area (^). Drag it next to the clock to keep it visible.
+Используются только встроенные компоненты Windows (PowerShell + .NET). Ничего дополнительно ставить не нужно, права администратора тоже не нужны. Значок может оказаться среди скрытых значков (^). Перетащи его к часам, чтобы он всегда был виден.
 
-## Settings
+## Настройки
 
 | | macOS | Windows |
 |---|---|---|
-| Settings file | `~/.leakwatch/config.sh` | `%LOCALAPPDATA%\LeakWatch\config.json` |
-| Log | `~/.leakwatch/leakwatch.log` | `%LOCALAPPDATA%\LeakWatch\leakwatch.log` |
-| Open from the app | menu → **Edit settings** | tray → **Edit settings** |
+| Файл настроек | `~/.leakwatch/config.sh` | `%LOCALAPPDATA%\LeakWatch\config.json` |
+| Журнал | `~/.leakwatch/leakwatch.log` | `%LOCALAPPDATA%\LeakWatch\leakwatch.log` |
+| Открыть из программы | меню → **Edit settings** | трей → **Edit settings** |
 
-- **Allowed countries:** where your VPN servers and DNS are allowed to be. Use the exact names bash.ws uses (e.g. `United States`, `Netherlands`). Leave it empty to skip this check.
-- **Alert words:** anything that means "my real location is exposed": a country (`Russia` also matches `Russian Federation`), a city, or an ISP name. A 2-letter word such as `ir` is matched against the country code.
-- **Sounds:** on macOS, any built-in sound name (`Hero`, `Basso`, `Glass`…) or a path to an audio file. On Windows, any `.wav` file.
+- **Разрешённые страны** — где могут находиться серверы VPN и DNS. Названия пиши так, как их пишет bash.ws (например, `United States`, `Netherlands`). Оставь список пустым, чтобы отключить эту проверку.
+- **Слова-тревоги** — всё, что означает «раскрыто моё реальное местоположение»: страна (`Russia` совпадёт и с `Russian Federation`), город или название провайдера. Слово из 2 букв, например `ir`, сравнивается с кодом страны.
+- **Звуки:** на macOS — название встроенного звука (`Hero`, `Basso`, `Glass`…) или путь к аудиофайлу, на Windows — любой `.wav`-файл.
 
-Changes apply on the next test. No restart needed.
+Изменения применяются со следующей проверки, перезапускать ничего не нужно.
 
-## Uninstall
+## Удаление
 
 - **macOS:** `~/.leakwatch/uninstall.sh`
-- **Windows:** double-click `windows\uninstall.cmd`, or run `%LOCALAPPDATA%\LeakWatch\uninstall.ps1`
+- **Windows:** дважды кликни `windows\uninstall.cmd` или запусти `%LOCALAPPDATA%\LeakWatch\uninstall.ps1`
 
-## FAQ
+## Вопросы и ответы
 
-**It says "Leak" but my VPN is on.**
-Your VPN may use DNS servers in a different country than its exit server. If you trust them, add that country to your allowed list.
+**Пишет «Leak», хотя VPN включён.**
+Возможно, твой VPN использует DNS-серверы в другой стране, чем сервер выхода. Если ты им доверяешь, добавь эту страну в список разрешённых.
 
-**Does it fix leaks?**
-No. It detects them. To fix a leak, turn on your VPN client's "DNS leak protection" / "kill switch", or set your VPN's DNS servers manually.
+**Программа исправляет утечки?**
+Нет, она их только обнаруживает. Чтобы устранить утечку, включи в VPN-клиенте защиту от утечек DNS или kill switch либо вручную задай DNS-серверы VPN.
 
-**Why does the first test after login take a while?**
-LeakWatch waits up to 2 minutes for the network and VPN to come up, so you don't get false alarms.
+**Почему первая проверка после входа идёт долго?**
+LeakWatch ждёт до 2 минут, пока поднимутся сеть и VPN. Так не бывает ложных тревог.
 
-## License
+## Лицензия
 
-[MIT](LICENSE). Use it, change it, share it.
+[MIT](LICENSE): используй, меняй и распространяй свободно.
