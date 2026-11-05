@@ -14,7 +14,7 @@ macOS · Windows · бесплатно · открытый код · без ре
 
 ## ⚡ Быстрый запуск
 
-<img src="assets/quickstart-ru.png" align="right" width="260" alt="Быстрый запуск: 1 — подключи VPN, 2 — вставь одну команду, 3 — готово">
+<p align="center"><img src="assets/quickstart-ru.png" width="100%" alt="Быстрый запуск: 1 — подключи VPN, 2 — вставь одну команду, 3 — готово"></p>
 
 Сначала подключи VPN, потом выполни **одну команду**. Установщик задаст 3 коротких вопроса, и всё готово.
 
@@ -39,8 +39,6 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 > Удобнее мышкой? [Скачай ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), распакуй его и дважды кликни `windows\install.cmd`.
 
 Вот и всё. В строке меню или трее появится ✓, а на рабочем столе — виджет. С этого момента проверка идёт каждый час.
-
-<br clear="right">
 
 ---
 

@@ -1,5 +1,5 @@
 // Renders the "Quick start" README art:
-//   quickstart-ru.png / quickstart-en.png  (vertical, 3 steps)
+//   quickstart-ru.png / quickstart-en.png  (horizontal banner, 3 steps)
 //   icon-macos.png / icon-windows.png      (platform badges for headings)
 // Build & run: swiftc -o /tmp/makeqs assets/make-quickstart.swift && /tmp/makeqs assets
 import AppKit
@@ -56,10 +56,10 @@ struct Step { let icon: String; let title: String; let sub: String }
 
 func quickstart(_ lang: String) {
     let ru = lang == "ru"
-    let W: CGFloat = 520, H: CGFloat = 800
+    let W: CGFloat = 1280, H: CGFloat = 380
     let steps = ru ? [
         Step(icon: "lock.shield.fill", title: "Подключи VPN", sub: "любой, как обычно"),
-        Step(icon: "terminal.fill", title: "Вставь одну команду", sub: "Терминал или PowerShell"),
+        Step(icon: "terminal.fill", title: "Вставь команду", sub: "Терминал или PowerShell"),
         Step(icon: "checkmark.circle.fill", title: "Готово", sub: "✓ в меню и виджет на столе"),
     ] : [
         Step(icon: "lock.shield.fill", title: "Connect your VPN", sub: "any VPN, as usual"),
@@ -67,59 +67,64 @@ func quickstart(_ lang: String) {
         Step(icon: "checkmark.circle.fill", title: "Done", sub: "✓ in the menu bar + widget"),
     ]
     render("quickstart-\(lang).png", W, H) {
-        roundedBackground(NSRect(x: 0, y: 0, width: W, height: H), 36)
+        roundedBackground(NSRect(x: 0, y: 0, width: W, height: H), 32)
 
         // Header
-        symbol("bolt.fill", 34, [rgb(0xFFD60A)], 64, H - 78)
-        text(ru ? "Быстрый запуск" : "Quick start", 94, H - 100, .systemFont(ofSize: 38, weight: .heavy), .white)
-        text(ru ? "3 шага · около минуты" : "3 steps · about a minute", 48, H - 148,
-             .systemFont(ofSize: 21, weight: .medium), rgb(0xFFFFFF, 0.55))
+        symbol("bolt.fill", 30, [rgb(0xFFD60A)], 66, H - 62)
+        text(ru ? "Быстрый запуск" : "Quick start", 92, H - 82, .systemFont(ofSize: 34, weight: .heavy), .white)
+        let hf = NSFont.systemFont(ofSize: 34, weight: .heavy)
+        let hw = ((ru ? "Быстрый запуск" : "Quick start") as NSString).size(withAttributes: [.font: hf]).width
+        text(ru ? "3 шага · около минуты" : "3 steps · about a minute", 92 + hw + 22, H - 74,
+             .systemFont(ofSize: 21, weight: .medium), rgb(0xFFFFFF, 0.5))
 
-        // Steps
-        let top = H - 200, stepH: CGFloat = 158, gap: CGFloat = 36
+        // Three step cards in a row with arrows between them
+        let margin: CGFloat = 48, gap: CGFloat = 60
+        let cw = (W - margin * 2 - gap * 2) / 3, ch: CGFloat = 222, cy: CGFloat = 40
         for (i, s) in steps.enumerated() {
-            let y = top - CGFloat(i + 1) * stepH - CGFloat(i) * gap
-            let card = NSRect(x: 40, y: y, width: W - 80, height: stepH)
+            let card = NSRect(x: margin + CGFloat(i) * (cw + gap), y: cy, width: cw, height: ch)
             let last = i == steps.count - 1
             (last ? rgb(0x163A2A, 0.95) : rgb(0xFFFFFF, 0.07)).setFill()
             NSBezierPath(roundedRect: card, xRadius: 24, yRadius: 24).fill()
             if last {
                 green.withAlphaComponent(0.55).setStroke()
-                let b = NSBezierPath(roundedRect: card.insetBy(dx: 0.5, dy: 0.5), xRadius: 24, yRadius: 24)
+                let b = NSBezierPath(roundedRect: card.insetBy(dx: 0.75, dy: 0.75), xRadius: 24, yRadius: 24)
                 b.lineWidth = 1.5; b.stroke()
             }
 
-            // number badge
-            let bc = NSRect(x: card.minX + 24, y: card.maxY - 64, width: 40, height: 40)
+            // number badge (top-left) and icon (top-right)
+            let bc = NSRect(x: card.minX + 24, y: card.maxY - 66, width: 42, height: 42)
             (last ? green : rgb(0xFFFFFF, 0.14)).setFill(); NSBezierPath(ovalIn: bc).fill()
-            let num = "\(i + 1)" as NSString
-            let nf = NSFont.systemFont(ofSize: 21, weight: .bold)
-            let ns = num.size(withAttributes: [.font: nf])
+            let nf = NSFont.systemFont(ofSize: 22, weight: .bold)
+            let ns = ("\(i + 1)" as NSString).size(withAttributes: [.font: nf])
             text("\(i + 1)", bc.midX - ns.width / 2, bc.midY - ns.height / 2, nf, .white)
+            symbol(s.icon, 32, last ? [.white, green] : [rgb(0xFFFFFF, 0.75), rgb(0xFFFFFF, 0.25)],
+                   card.maxX - 46, bc.midY, weight: .regular)
 
-            text(s.title, card.minX + 80, card.maxY - 62, .systemFont(ofSize: 27, weight: .semibold), .white)
-            text(s.sub, card.minX + 80, card.maxY - 98, .systemFont(ofSize: 19), rgb(0xFFFFFF, 0.6))
+            text(s.title, card.minX + 24, card.minY + 92, .systemFont(ofSize: 28, weight: .semibold), .white)
+            text(s.sub, card.minX + 24, card.minY + 60, .systemFont(ofSize: 19), rgb(0xFFFFFF, 0.6))
 
-            // big icon on the right
-            symbol(s.icon, 34, last ? [.white, green] : [rgb(0xFFFFFF, 0.75), rgb(0xFFFFFF, 0.25)],
-                   card.maxX - 50, card.midY, weight: .regular)
+            // small visual at the bottom of each card
+            let foot = NSRect(x: card.minX + 24, y: card.minY + 18, width: cw - 48, height: 30)
+            switch i {
+            case 1:
+                rgb(0x000000, 0.35).setFill(); NSBezierPath(roundedRect: foot, xRadius: 8, yRadius: 8).fill()
+                text("$ curl … | install.sh", foot.minX + 12, foot.minY + 5,
+                     .monospacedSystemFont(ofSize: 15, weight: .regular), green.withAlphaComponent(0.9))
+            case 2:
+                let pill = NSRect(x: foot.minX, y: foot.minY, width: 98, height: 30)
+                rgb(0xFFFFFF, 0.12).setFill(); NSBezierPath(roundedRect: pill, xRadius: 9, yRadius: 9).fill()
+                symbol("checkmark.circle.fill", 15, [.white, green], pill.minX + 20, pill.midY)
+                text("DNS", pill.minX + 36, pill.minY + 5, .systemFont(ofSize: 16, weight: .semibold), .white)
+            default:
+                text(ru ? "WireGuard · OpenVPN · любой" : "WireGuard · OpenVPN · any", foot.minX, foot.minY + 6,
+                     .systemFont(ofSize: 15, weight: .medium), rgb(0xFFFFFF, 0.38))
+            }
 
-            // connector to the next step
+            // arrow to the next card
             if !last {
-                rgb(0xFFFFFF, 0.25).setStroke()
-                let l = NSBezierPath()
-                l.move(to: NSPoint(x: bc.midX, y: card.minY - 6))
-                l.line(to: NSPoint(x: bc.midX, y: card.minY - gap + 6))
-                l.lineWidth = 2; l.setLineDash([5, 5], count: 2, phase: 0); l.stroke()
+                symbol("chevron.right", 26, [rgb(0xFFFFFF, 0.35)], card.maxX + gap / 2, card.midY, weight: .bold)
             }
         }
-
-        // mini command preview inside step 2
-        let s2 = top - 2 * stepH - gap
-        let cmd = NSRect(x: 120, y: s2 + 18, width: W - 240, height: 30)
-        rgb(0x000000, 0.35).setFill(); NSBezierPath(roundedRect: cmd, xRadius: 8, yRadius: 8).fill()
-        text("$ curl … | install.sh", cmd.minX + 12, cmd.minY + 5,
-             .monospacedSystemFont(ofSize: 15, weight: .regular), green.withAlphaComponent(0.9))
     }
 }
 
