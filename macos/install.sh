@@ -30,8 +30,8 @@ if ! command -v swiftc >/dev/null; then
 fi
 
 mkdir -p "$DIR" "$HOME/Applications" "$LA"
-cp "$SRC/leakwatch.sh" "$DIR/leakwatch.sh"
-chmod +x "$DIR/leakwatch.sh"
+cp "$SRC/leakwatch.sh" "$SRC/uninstall.sh" "$DIR/"
+chmod +x "$DIR/leakwatch.sh" "$DIR/uninstall.sh"
 
 # ---- settings ----------------------------------------------------------------
 if [ -f "$DIR/config.sh" ]; then
@@ -136,4 +136,4 @@ bold "Done! LeakWatch is running."
 echo "  • Menu bar: ✓/✗ DNS icon     • Desktop widget: top-right (drag to move)"
 echo "  • Tests run at login and every hour; alerts only when something is wrong."
 echo "  • Settings: $DIR/config.sh    • Log: $DIR/leakwatch.log"
-echo "  • Uninstall: $SRC/uninstall.sh"
+echo "  • Uninstall: ~/.leakwatch/uninstall.sh"

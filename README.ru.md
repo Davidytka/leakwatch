@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/cover.png" alt="LeakWatch — ежечасная проверка утечек DNS для macOS и Windows" width="100%"></p>
+
 # LeakWatch
 
 **VPN говорит, что ты защищён. DNS может говорить обратное.**
@@ -7,6 +9,30 @@ LeakWatch раз в час проверяет утечки DNS и показыв
 macOS · Windows · бесплатно · открытый код · без регистрации · без сбора данных
 
 🇬🇧 [English version](README.md)
+
+---
+
+## ⚡ Быстрый запуск
+
+Сначала подключи VPN, потом выполни **одну команду**. Установщик задаст 3 коротких вопроса, и всё готово.
+
+**macOS:** открой Терминал и вставь:
+
+```bash
+curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz | tar xz -C /tmp && /tmp/leakwatch-main/macos/install.sh
+```
+
+> Нужны Apple Command Line Tools. Если ты их никогда не ставил, сначала выполни `xcode-select --install`.
+
+**Windows:** нажми `Win + R`, введи `powershell`, нажми Enter и вставь:
+
+```powershell
+[Net.ServicePointManager]::SecurityProtocol='Tls12'; iwr https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip -UseBasicParsing -OutFile $env:TEMP\lw.zip; Expand-Archive $env:TEMP\lw.zip $env:TEMP\lw -Force; & "$env:TEMP\lw\leakwatch-main\windows\install.cmd"
+```
+
+> Удобнее мышкой? [Скачай ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), распакуй его и дважды кликни `windows\install.cmd`.
+
+Вот и всё. В строке меню или трее появится ✓, а на рабочем столе — виджет. С этого момента проверка идёт каждый час.
 
 ---
 
@@ -99,8 +125,8 @@ cd leakwatch/macos
 
 ## Удаление
 
-- **macOS:** `./macos/uninstall.sh`
-- **Windows:** дважды кликни `windows\uninstall.cmd`
+- **macOS:** `~/.leakwatch/uninstall.sh`
+- **Windows:** дважды кликни `windows\uninstall.cmd` или запусти `%LOCALAPPDATA%\LeakWatch\uninstall.ps1`
 
 ## Вопросы и ответы
 
