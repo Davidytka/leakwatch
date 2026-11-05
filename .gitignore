@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+status.json
+config.sh
+config.json
+widget.json
