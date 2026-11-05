@@ -1,5 +1,5 @@
 // Renders the "Quick start" README art:
-//   quickstart-ru.png / quickstart-en.png  (horizontal banner, 3 steps)
+//   quickstart-banner-ru.png / quickstart-banner-en.png  (horizontal banner, 3 steps)
 //   icon-macos.png / icon-windows.png      (platform badges for headings)
 // Build & run: swiftc -o /tmp/makeqs assets/make-quickstart.swift && /tmp/makeqs assets
 import AppKit
@@ -66,7 +66,7 @@ func quickstart(_ lang: String) {
         Step(icon: "terminal.fill", title: "Paste one command", sub: "Terminal or PowerShell"),
         Step(icon: "checkmark.circle.fill", title: "Done", sub: "✓ in the menu bar + widget"),
     ]
-    render("quickstart-\(lang).png", W, H) {
+    render("quickstart-banner-\(lang).png", W, H) {
         roundedBackground(NSRect(x: 0, y: 0, width: W, height: H), 32)
 
         // Header

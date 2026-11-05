@@ -14,7 +14,7 @@ macOS · Windows · free · open source · no account · no telemetry
 
 ## ⚡ Quick start
 
-<p align="center"><img src="assets/quickstart-en.png" width="100%" alt="Quick start: 1 connect your VPN, 2 paste one command, 3 done"></p>
+<p align="center"><img src="assets/quickstart-banner-en.png" width="100%" alt="Quick start: 1 connect your VPN, 2 paste one command, 3 done"></p>
 
 Connect your VPN first, then run **one command**. The installer asks 3 short questions and you're done.
 
