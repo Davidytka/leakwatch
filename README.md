@@ -16,8 +16,6 @@ macOS · Windows · бесплатно · открытый код · без ре
 
 <p align="center"><img src="assets/quickstart-steps-ru.png" width="100%" alt="Быстрый запуск: 1 — подключи VPN, 2 — вставь одну команду, 3 — готово"></p>
 
-Сначала подключи VPN, потом выполни **одну команду**. Установщик задаст 3 коротких вопроса, и всё готово.
-
 ### <img src="assets/icon-macos.png" width="28" align="center" alt=""> macOS
 
 Открой Терминал и вставь:
@@ -28,6 +26,8 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 
 > Нужны Apple Command Line Tools. Если ты их никогда не ставил, сначала выполни `xcode-select --install`.
 
+> Удобнее мышкой? [Скачай ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip) и распакуй его. Открой Терминал, напечатай `bash ` (с пробелом), перетащи в окно файл `macos/install.sh` и нажми Enter.
+
 ### <img src="assets/icon-windows.png" width="28" align="center" alt=""> Windows
 
 Нажми `Win + R`, введи `powershell`, нажми Enter и вставь:
@@ -37,8 +37,6 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 ```
 
 > Удобнее мышкой? [Скачай ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), распакуй его и дважды кликни `windows\install.cmd`.
-
-Вот и всё. В строке меню или трее появится ✓, а на рабочем столе — виджет. С этого момента проверка идёт каждый час.
 
 ---
 
