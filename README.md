@@ -14,9 +14,13 @@ macOS · Windows · бесплатно · открытый код · без ре
 
 ## ⚡ Быстрый запуск
 
+<img src="assets/quickstart-ru.png" align="right" width="260" alt="Быстрый запуск: 1 — подключи VPN, 2 — вставь одну команду, 3 — готово">
+
 Сначала подключи VPN, потом выполни **одну команду**. Установщик задаст 3 коротких вопроса, и всё готово.
 
-**macOS:** открой Терминал и вставь:
+### <img src="assets/icon-macos.png" width="28" align="center" alt=""> macOS
+
+Открой Терминал и вставь:
 
 ```bash
 curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz | tar xz -C /tmp && /tmp/leakwatch-main/macos/install.sh
@@ -24,7 +28,9 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 
 > Нужны Apple Command Line Tools. Если ты их никогда не ставил, сначала выполни `xcode-select --install`.
 
-**Windows:** нажми `Win + R`, введи `powershell`, нажми Enter и вставь:
+### <img src="assets/icon-windows.png" width="28" align="center" alt=""> Windows
+
+Нажми `Win + R`, введи `powershell`, нажми Enter и вставь:
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol='Tls12'; iwr https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip -UseBasicParsing -OutFile $env:TEMP\lw.zip; Expand-Archive $env:TEMP\lw.zip $env:TEMP\lw -Force; & "$env:TEMP\lw\leakwatch-main\windows\install.cmd"
@@ -33,6 +39,8 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 > Удобнее мышкой? [Скачай ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), распакуй его и дважды кликни `windows\install.cmd`.
 
 Вот и всё. В строке меню или трее появится ✓, а на рабочем столе — виджет. С этого момента проверка идёт каждый час.
+
+<br clear="right">
 
 ---
 

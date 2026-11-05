@@ -14,9 +14,13 @@ macOS · Windows · free · open source · no account · no telemetry
 
 ## ⚡ Quick start
 
+<img src="assets/quickstart-en.png" align="right" width="260" alt="Quick start: 1 connect your VPN, 2 paste one command, 3 done">
+
 Connect your VPN first, then run **one command**. The installer asks 3 short questions and you're done.
 
-**macOS:** open Terminal and paste:
+### <img src="assets/icon-macos.png" width="28" align="center" alt=""> macOS
+
+Open Terminal and paste:
 
 ```bash
 curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz | tar xz -C /tmp && /tmp/leakwatch-main/macos/install.sh
@@ -24,7 +28,9 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 
 > Needs Apple Command Line Tools. If you've never installed them, run `xcode-select --install` first.
 
-**Windows:** press `Win + R`, type `powershell`, press Enter, and paste:
+### <img src="assets/icon-windows.png" width="28" align="center" alt=""> Windows
+
+Press `Win + R`, type `powershell`, press Enter, and paste:
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol='Tls12'; iwr https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip -UseBasicParsing -OutFile $env:TEMP\lw.zip; Expand-Archive $env:TEMP\lw.zip $env:TEMP\lw -Force; & "$env:TEMP\lw\leakwatch-main\windows\install.cmd"
@@ -33,6 +39,8 @@ curl -fsSL https://github.com/Davidytka/leakwatch/archive/refs/heads/main.tar.gz
 > Prefer clicking? [Download the ZIP](https://github.com/Davidytka/leakwatch/archive/refs/heads/main.zip), unzip it, and double-click `windows\install.cmd`.
 
 That's it. A ✓ appears in your menu bar or tray and a widget appears on your desktop. Tests run every hour from now on.
+
+<br clear="right">
 
 ---
 
