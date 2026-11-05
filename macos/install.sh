@@ -8,7 +8,10 @@ SRC="$(cd "$(dirname "$0")" && pwd)"
 DIR="$HOME/.leakwatch"
 APP="$HOME/Applications/LeakWatch.app"
 LA="$HOME/Library/LaunchAgents"
-bold() { printf '\n\033[1m%s\033[0m\n' "$1"; }
+# Every message is shown in Russian first, then in English (dimmed).
+title() { printf '\n\033[1m%s\033[0m\n\033[2m%s\033[0m\n' "$1" "$2"; }
+say()   { printf '%s\n\033[2m%s\033[0m\n' "$1" "$2"; }
+ask()   { say "$2" "$3"; read -r -p "> " "$1"; }
 to_array() { # "a, b ,c" -> "a" "b" "c"
   local out="" item
   IFS=',' read -ra parts <<< "$1"
@@ -20,14 +23,18 @@ to_array() { # "a, b ,c" -> "a" "b" "c"
 }
 
 # ---- checks ------------------------------------------------------------------
-[ "$(uname)" = "Darwin" ] || { echo "This installer is for macOS."; exit 1; }
+[ "$(uname)" = "Darwin" ] || { say "Этот установщик только для macOS." "This installer is for macOS."; exit 1; }
 if ! command -v jq >/dev/null; then
-  echo "jq is required (built into macOS 15+). Install it with: brew install jq"; exit 1
+  say "Нужна программа jq (встроена в macOS 15+). Установи её: brew install jq" \
+      "jq is required (built into macOS 15+). Install it with: brew install jq"; exit 1
 fi
 if ! command -v swiftc >/dev/null; then
-  echo "Apple Command Line Tools are needed to build the app."
-  echo "Run:  xcode-select --install   then run this installer again."; exit 1
+  say "Для сборки приложения нужны Apple Command Line Tools." "Apple Command Line Tools are needed to build the app."
+  say "Выполни:  xcode-select --install   и запусти установщик ещё раз." \
+      "Run:  xcode-select --install   then run this installer again."; exit 1
 fi
+
+title "LeakWatch — установка" "LeakWatch installer"
 
 mkdir -p "$DIR" "$HOME/Applications" "$LA"
 cp "$SRC/leakwatch.sh" "$SRC/uninstall.sh" "$DIR/"
@@ -35,29 +42,36 @@ chmod +x "$DIR/leakwatch.sh" "$DIR/uninstall.sh"
 
 # ---- settings ----------------------------------------------------------------
 if [ -f "$DIR/config.sh" ]; then
-  bold "Keeping your existing settings: $DIR/config.sh"
+  title "Оставляю твои прежние настройки: $DIR/config.sh" "Keeping your existing settings: $DIR/config.sh"
 else
-  bold "Step 1. Connect your VPN now, then press Enter."
-  read -r _
-  echo "Running a first test (takes a few seconds)..."
+  title "Шаг 1. Подключи VPN и нажми Enter." "Step 1. Connect your VPN now, then press Enter."
+  read -r -p "> " _
+  say "Провожу первую проверку (несколько секунд)..." "Running a first test (takes a few seconds)..."
   LEAKWATCH_QUIET=1 "$DIR/leakwatch.sh" >/dev/null 2>&1 || true
   seen=$(jq -r '[.ip, .dns[]?] | map(select(. != null) | .country_name) | unique | join(", ")' "$DIR/status.json" 2>/dev/null || true)
 
-  bold "Step 2. Allowed countries (where your VPN servers are)."
+  title "Шаг 2. Разрешённые страны (где находятся серверы твоего VPN)." \
+        "Step 2. Allowed countries (where your VPN servers are)."
+  say "Названия — по-английски, как их пишет bash.ws (например, 'United States', 'Russian Federation')." \
+      "Names must match how bash.ws writes them (e.g. 'United States', 'Russian Federation')."
   if [ -n "$seen" ]; then
-    echo "Countries seen right now: $seen"
-    read -r -p "Press Enter to allow exactly these, or type your own comma-separated list: " ans
+    say "Сейчас видны страны: $seen" "Countries seen right now: $seen"
+    ask ans "Нажми Enter, чтобы разрешить именно их, или впиши свой список через запятую:" \
+            "Press Enter to allow exactly these, or type your own comma-separated list:"
     allowed="${ans:-$seen}"
   else
-    echo "Could not run the test (offline?)."
-    read -r -p "Type allowed countries, comma-separated (e.g. Netherlands, Sweden), or leave empty: " allowed
+    say "Не удалось провести проверку (нет интернета?)." "Could not run the test (offline?)."
+    ask allowed "Впиши разрешённые страны через запятую (например: Netherlands, Sweden) или оставь пустым:" \
+                "Type allowed countries, comma-separated (e.g. Netherlands, Sweden), or leave empty:"
   fi
-  echo "Names must match how bash.ws writes them (e.g. 'United States', 'Russian Federation')."
 
-  bold "Step 3. Your real country."
-  echo "If it EVER shows up in a test, LeakWatch raises a red alert with a pop-up and sound."
-  read -r -p "Country name (e.g. Russia, Iran, China, Turkey) or leave empty: " home
-  read -r -p "Optional extra alert words - cities or ISP names, comma-separated: " extra
+  title "Шаг 3. Твоя реальная страна." "Step 3. Your real country."
+  say "Если она хоть раз появится в проверке, LeakWatch поднимет красную тревогу: окно и звук." \
+      "If it EVER shows up in a test, LeakWatch raises a red alert with a pop-up and sound."
+  ask home "Название страны латиницей (например: Russia, Iran, China, Turkey) или оставь пустым:" \
+           "Country name (e.g. Russia, Iran, China, Turkey) or leave empty:"
+  ask extra "Необязательно: другие слова-тревоги — города или провайдеры, через запятую:" \
+            "Optional extra alert words - cities or ISP names, comma-separated:"
 
   cat > "$DIR/config.sh" <<EOF
 # LeakWatch settings. Edit, save - the next test uses them. No restart needed.
@@ -78,11 +92,11 @@ LEAK_SOUND="Basso"
 CRITICAL_SOUND="Hero"
 CRITICAL_REPEAT=3
 EOF
-  bold "Saved settings to $DIR/config.sh"
+  title "Настройки сохранены: $DIR/config.sh" "Saved settings to $DIR/config.sh"
 fi
 
 # ---- build the menu bar app --------------------------------------------------
-bold "Building LeakWatch.app..."
+title "Собираю LeakWatch.app..." "Building LeakWatch.app..."
 mkdir -p "$APP/Contents/MacOS"
 swiftc -O -swift-version 5 -o "$APP/Contents/MacOS/LeakWatch" "$SRC/LeakWatch.swift"
 cat > "$APP/Contents/Info.plist" <<EOF
@@ -132,8 +146,11 @@ EOF
   done
 fi
 
-bold "Done! LeakWatch is running."
-echo "  • Menu bar: ✓/✗ DNS icon     • Desktop widget: top-right (drag to move)"
-echo "  • Tests run at login and every hour; alerts only when something is wrong."
-echo "  • Settings: $DIR/config.sh    • Log: $DIR/leakwatch.log"
-echo "  • Uninstall: ~/.leakwatch/uninstall.sh"
+title "Готово! LeakWatch работает." "Done! LeakWatch is running."
+say "  • Строка меню: значок ✓/✗ DNS   • Виджет: справа вверху (можно перетащить)" \
+    "  • Menu bar: ✓/✗ DNS icon         • Desktop widget: top-right (drag to move)"
+say "  • Проверка при входе и каждый час; оповещения — только если что-то не так." \
+    "  • Tests run at login and every hour; alerts only when something is wrong."
+say "  • Настройки: $DIR/config.sh   • Журнал: $DIR/leakwatch.log" \
+    "  • Settings: $DIR/config.sh    • Log: $DIR/leakwatch.log"
+say "  • Удаление: ~/.leakwatch/uninstall.sh" "  • Uninstall: ~/.leakwatch/uninstall.sh"
